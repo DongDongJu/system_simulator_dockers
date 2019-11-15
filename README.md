@@ -17,6 +17,12 @@ check the container id from `docker ps`
 docker exec -it 'container-name' /bin/bash
 ~~~
 
+## volume
+
+if you want to connect the host folder to the folder inside docker container then 
+
+add `-v /host/directory:/container/directory` option when you running the docker container.
+
 
 ### GEM5
 
