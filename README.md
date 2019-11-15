@@ -33,3 +33,7 @@ gem5 run example
 ~~~
 ./build/ARM/gem5.opt ./configs/example/se.py -c ./tests/test-progs/hello/bin/arm/linux/hello 
 ~~~
+
+TODO: need to add download fs image file
+ref) http://www.gem5.org/dist/current/arm/?C=M;O=A
+ref)https://www.youtube.com/watch?v=gd_DtxQD5kc
