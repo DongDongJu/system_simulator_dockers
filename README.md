@@ -24,6 +24,16 @@ if you want to connect the host folder to the folder inside docker container the
 add `-v /host/directory:/container/directory` option when you running the docker container.
 
 
+### sniper
+the version of the sniper is 7.2.
+sniper.tgz modified for compiling (fix some bug). 
+
+sniper run example
+~~~
+go to test/fft
+make run
+~~~
+
 ### GEM5
 
 now this dockerfile build the version of ARM simulator
