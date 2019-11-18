@@ -44,7 +44,7 @@ make run
 
 ~~~
 in the host
-docker run -it -v /path/to/example/sniper:/usr/src/sniper_example sniper-opencv2 ./run-sniper -- python /usr/src/sniper_example/class3.py /usr/src/sniper_example/noisy.avi /usr/src/sniper_example/output.avi
+docker run -it -v /path/to/example/sniper:/usr/src/sniper_example sniper-opencv2 ./run-sniper -- /usr/bin/python /usr/src/sniper_example/class3.py /usr/src/sniper_example/noisy.avi /usr/src/sniper_example/output.avi
 ~~~
 ### GEM5
 
