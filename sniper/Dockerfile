@@ -1,4 +1,46 @@
 FROM ubuntu:16.04
+MAINTAINER Dongjoo Seo <dseo3@uci.edu>
+RUN apt-get update && \
+        apt-get install -y \
+        build-essential \
+        cmake \
+        git \
+        wget \
+        unzip \
+        yasm \
+        pkg-config \
+        libswscale-dev \
+        libtbb2 \
+        libtbb-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libtiff-dev \
+        libjasper-dev \
+        libavformat-dev \
+        libpq-dev \
+	python-pip \
+        python2.7 \
+        python2.7-dev
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+RUN wget https://github.com/opencv/opencv/archive/2.4.13.3.zip \
+&& unzip 2.4.13.3.zip \
+&& mkdir /opencv-2.4.13.3/cmake_binary \
+&& cd /opencv-2.4.13.3/cmake_binary \
+&& cmake -DWITH_QT=OFF \
+        -DWITH_OPENGL=ON \
+        -DFORCE_VTK=OFF \
+        -DWITH_TBB=ON \
+        -DWITH_GDAL=ON \
+        -DWITH_XINE=ON \
+        -DBUILD_EXAMPLES=OFF \
+        -DENABLE_PRECOMPILED_HEADERS=OFF .. \
+&& make install \
+&& rm /2.4.13.3.zip \
+&& rm -r /opencv-2.4.13.3
 
 RUN dpkg --add-architecture i386
 RUN apt-get update && apt-get install -y python binutils build-essential curl git libboost-dev libncurses5:i386 libsqlite3-dev libstdc++6:i386 python wget zlib1g-dev libbz2-dev screen tmux binutils libc6:i386 libncurses5:i386 libstdc++6:i386 && rm -rf /var/lib/apt/lists/*
