@@ -1,5 +1,64 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 MAINTAINER Dongjoo Seo <dseo3@uci.edu>
+
+# Add i386 support for support for Pin
+RUN dpkg --add-architecture i386
+RUN apt-get update && apt-get install -y \
+    python \
+    screen \
+    tmux \
+    binutils \
+    libc6:i386 \
+    libncurses5:i386 \
+    libstdc++6:i386 \
+ && rm -rf /var/lib/apt/lists/*
+# For building Sniper
+RUN apt-get update && apt-get install -y \
+    automake \
+    build-essential \
+    curl \
+    wget \
+    libboost-dev \
+    libsqlite3-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    g++-4.8 \
+ && rm -rf /var/lib/apt/lists/*
+# For building RISC-V Tools
+RUN apt-get update && apt-get install -y \
+    autoconf \
+    automake \
+    autotools-dev \
+    bc \
+    bison \
+    curl \
+    device-tree-compiler \
+    flex \
+    gawk \
+    gperf \
+    libexpat-dev \
+    libgmp-dev \
+    libmpc-dev \
+    libmpfr-dev \
+    libtool \
+    libusb-1.0-0-dev \
+    patchutils \
+    pkg-config \
+    texinfo \
+    zlib1g-dev \
+ && rm -rf /var/lib/apt/lists/*
+# Helper utilities
+RUN apt-get update
+RUN apt-get install -y software-properties-common 
+RUN apt-get update && apt-get install -y \
+    gdb \
+    git \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN add-apt-repository 'deb http://security.ubuntu.com/ubuntu xenial-security main'
+RUN apt update
+RUN apt install -y libjasper1 libjasper-dev && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && \
         apt-get install -y \
         build-essential \
@@ -15,7 +74,6 @@ RUN apt-get update && \
         libjpeg-dev \
         libpng-dev \
         libtiff-dev \
-        libjasper-dev \
         libavformat-dev \
         libpq-dev \
 	python-pip \
@@ -25,27 +83,32 @@ RUN apt-get update && \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN add-apt-repository ppa:jeff250/opencv
+RUN apt-get update
+RUN apt-get install -y libopencv-dev
+RUN apt-get install -y libopencv-nonfree-dev
+RUN pip uninstall -y numpy
+RUN apt-get install -y python-opencv
 
-RUN wget https://github.com/opencv/opencv/archive/2.4.13.3.zip \
-&& unzip 2.4.13.3.zip \
-&& mkdir /opencv-2.4.13.3/cmake_binary \
-&& cd /opencv-2.4.13.3/cmake_binary \
-&& cmake -DWITH_QT=OFF \
-        -DWITH_OPENGL=ON \
-        -DFORCE_VTK=OFF \
-        -DWITH_TBB=ON \
-        -DWITH_GDAL=ON \
-        -DWITH_XINE=ON \
-        -DBUILD_EXAMPLES=OFF \
-        -DENABLE_PRECOMPILED_HEADERS=OFF .. \
-&& make install \
-&& rm /2.4.13.3.zip \
-&& rm -r /opencv-2.4.13.3
+#ENV OPENCV_VCSVERSION 2.4.13
+#RUN wget https://github.com/opencv/opencv/archive/2.4.13.3.zip \
+#&& unzip 2.4.13.3.zip
+#RUN echo "set(OPENCV_VCSVERSION "2.4.13")" > opencv-2.4.13.3/cmake/OpenCVPackaging.cmake
+#RUN mkdir /opencv-2.4.13.3/cmake_binary \
+#&& cd /opencv-2.4.13.3/cmake_binary \
+#&& cmake -DWITH_QT=OFF \
+#        -DWITH_OPENGL=ON \
+#        -DFORCE_VTK=OFF \
+#        -DWITH_TBB=ON \
+#        -DWITH_GDAL=ON \
+#        -DWITH_XINE=ON \
+#        -DBUILD_EXAMPLES=OFF \
+#        -DENABLE_PRECOMPILED_HEADERS=OFF .. \
+#&& make install \
+#&& rm /2.4.13.3.zip \
+#&& rm -r /opencv-2.4.13.3
 
-RUN dpkg --add-architecture i386
-RUN apt-get update && apt-get install -y python binutils build-essential curl git libboost-dev libncurses5:i386 libsqlite3-dev libstdc++6:i386 python wget zlib1g-dev libbz2-dev screen tmux binutils libc6:i386 libncurses5:i386 libstdc++6:i386 && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y automake build-essential curl wget libboost-dev libsqlite3-dev zlib1g-dev libbz2-dev g++-4.8 g++-4.9 git && rm -rf /var/lib/apt/lists/*
 
 ENV PIN_NAME pin-3.11-97998-g7ecce2dac-gcc-linux
 WORKDIR /usr/local/bin
