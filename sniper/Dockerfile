@@ -105,4 +105,4 @@ WORKDIR $SNIPER_PATH
 RUN make -j2
 
 RUN pip uninstall -y numpy
-RUN pip install -y pyinstaller
+RUN pip install pyinstaller
