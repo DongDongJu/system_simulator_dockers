@@ -83,31 +83,8 @@ RUN apt-get update && \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN add-apt-repository ppa:jeff250/opencv
-RUN apt-get update
-RUN apt-get install -y libopencv-dev
-RUN apt-get install -y libopencv-nonfree-dev
-RUN pip uninstall -y numpy
+ENV DEBIAN_FRONTEND="noninteractive"
 RUN apt-get install -y python-opencv
-
-#ENV OPENCV_VCSVERSION 2.4.13
-#RUN wget https://github.com/opencv/opencv/archive/2.4.13.3.zip \
-#&& unzip 2.4.13.3.zip
-#RUN echo "set(OPENCV_VCSVERSION "2.4.13")" > opencv-2.4.13.3/cmake/OpenCVPackaging.cmake
-#RUN mkdir /opencv-2.4.13.3/cmake_binary \
-#&& cd /opencv-2.4.13.3/cmake_binary \
-#&& cmake -DWITH_QT=OFF \
-#        -DWITH_OPENGL=ON \
-#        -DFORCE_VTK=OFF \
-#        -DWITH_TBB=ON \
-#        -DWITH_GDAL=ON \
-#        -DWITH_XINE=ON \
-#        -DBUILD_EXAMPLES=OFF \
-#        -DENABLE_PRECOMPILED_HEADERS=OFF .. \
-#&& make install \
-#&& rm /2.4.13.3.zip \
-#&& rm -r /opencv-2.4.13.3
-
 
 
 ENV PIN_NAME pin-3.11-97998-g7ecce2dac-gcc-linux
@@ -127,3 +104,5 @@ ENV SNIPER_PATH=/usr/local/src/sniper/sniper-7.2
 WORKDIR $SNIPER_PATH
 RUN make -j2
 
+RUN pip uninstall -y numpy
+RUN pip install -y pyinstaller

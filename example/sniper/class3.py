@@ -1,8 +1,8 @@
-# coding=utf-8
 import numpy as np
 import cv2
-import time
 import sys
+import os
+import time
 
 if __name__=="__main__":
 
@@ -15,7 +15,8 @@ if __name__=="__main__":
     fileName=sys.argv[2]  # change the file name if needed
     imgSize=(960,540)
     frame_per_second=20.0
-    fourcc=cv2.cv.CV_FOURCC(*'I420')
+    #fourcc=cv2.cv.CV_FOURCC(*'I420')
+    fourcc=cv2.VideoWriter_fourcc(*'I420')
     #writer = cv2.VideoWriter(fileName,cv2.VideoWriter_fourcc('I','4','2','0'),15,(960,540),True)#cv2.VideoWriter_fourcc(*"X264"), frame_per_second,imgSize)#0x00000021,15,(1280,720)) #cv2.VideoWriter_fourcc(*"X264"), frame_per_second,imgSize)
     writer = cv2.VideoWriter(fileName,fourcc,15,(960,540),True)#cv2.VideoWriter_fourcc(*"X264"), frame_per_second,imgSize)#0x00000021,15,(1280,720)) #cv2.VideoWriter_fourcc(*"X264"), frame_per_second,imgSize)
     #writer_init = cv2.VideoWriter('/home/nvidia/SHAHHOS/processing/noisy.avi',cv2.VideoWriter_fourcc('I','4','2','0'),15,(960,540),True)
