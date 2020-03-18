@@ -106,3 +106,65 @@ RUN make -j2
 
 RUN pip uninstall -y numpy
 RUN pip install pyinstaller
+
+USER root
+WORKDIR /root
+
+SHELL [ "/bin/bash", "-c" ]
+
+ARG PYTHON_VERSION_TAG=3.8.1
+ARG LINK_PYTHON_TO_PYTHON3=1
+
+# Existing lsb_release causes issues with modern installations of Python3
+# https://github.com/pypa/pip/issues/4924#issuecomment-435825490
+# Set (temporarily) DEBIAN_FRONTEND to avoid interacting with tzdata
+RUN apt-get -qq -y update && \
+    apt-get -qq -y upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get -qq -y install \
+        gcc \
+        g++ \
+        zlibc \
+        zlib1g-dev \
+        libssl-dev \
+        libbz2-dev \
+        libsqlite3-dev \
+        libncurses5-dev \
+        libgdbm-dev \
+        libgdbm-compat-dev \
+        liblzma-dev \
+        libreadline-dev \
+        uuid-dev \
+        libffi-dev \
+        tk-dev \
+        wget \
+        curl \
+        git \
+        make \
+        sudo \
+        bash-completion \
+        tree \
+        vim \
+	libsndfile1 \
+        software-properties-common && \
+    mv /usr/bin/lsb_release /usr/bin/lsb_release.bak && \
+    apt-get -y autoclean && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt-get/lists/*
+
+COPY install_python.sh install_python.sh
+RUN bash install_python.sh ${PYTHON_VERSION_TAG} ${LINK_PYTHON_TO_PYTHON3} && \
+    rm -r install_python.sh Python-${PYTHON_VERSION_TAG}
+
+# Use C.UTF-8 locale to avoid issues with ASCII encoding
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+USER root
+RUN pip3 install torch torchvision future scipy librosa unidecode inflect librosa requests Cython matplotlib regex tqdm
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+COPY sniper/* /usr/local/src/sniper/sniper-7.2/
+WORKDIR /usr/local/src/sniper/sniper-7.2
+
+RUN /bin/bash -c ./pre_mobilenet.sh 
+CMD [ "/bin/bash" ]
