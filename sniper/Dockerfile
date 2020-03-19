@@ -112,8 +112,6 @@ WORKDIR /root
 
 SHELL [ "/bin/bash", "-c" ]
 
-ARG PYTHON_VERSION_TAG=3.8.1
-ARG LINK_PYTHON_TO_PYTHON3=1
 
 # Existing lsb_release causes issues with modern installations of Python3
 # https://github.com/pypa/pip/issues/4924#issuecomment-435825490
@@ -151,10 +149,7 @@ RUN apt-get -qq -y update && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt-get/lists/*
 
-COPY install_python.sh install_python.sh
-RUN bash install_python.sh ${PYTHON_VERSION_TAG} ${LINK_PYTHON_TO_PYTHON3} && \
-    rm -r install_python.sh Python-${PYTHON_VERSION_TAG}
-
+RUN apt-get install -y python3.6 python3-pip
 # Use C.UTF-8 locale to avoid issues with ASCII encoding
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
